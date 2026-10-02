@@ -245,7 +245,7 @@
                 <h1>Há muita beleza na tua <em>singularidade</em></h1>
                 <p>Barboterapia, corte com visagismo e cuidados de beleza para quem leva o próprio estilo a sério. Em Palhoça, Santa Catarina.</p>
                 <div class="hero-actions">
-                    <a href="https://wa.me/554884747257?text=Ol%C3%A1!%20Gostaria%20de%20agendar%20um%20hor%C3%A1rio." class="btn btn-solid" target="_blank" rel="noopener">Agendar pelo WhatsApp</a>
+                    <a href="https://wa.me/554884747257?text=Ol%C3%A1!%20Gostaria%20de%20agendar%20um%20hor%C3%A1rio." id="btn-agendar" class="btn btn-solid" target="_blank" rel="noopener">Agendar pelo WhatsApp</a>
                     <a href="#servicos" class="btn btn-ghost">Ver serviços</a>
                 </div>
             </div>
@@ -356,6 +356,10 @@
     <script>
         const WA = 'https://wa.me/554884747257?text=';
 
+        // AGENDAMENTO ONLINE (Sistema Beauty)
+        // Cole aqui o link de agendamento entre as aspas. Vazio = tudo continua indo para o WhatsApp.
+        const AGENDA_URL = '';
+
         // Menu mobile
         const toggle = document.getElementById('menu-toggle');
         const menu = document.getElementById('nav-menu');
@@ -376,11 +380,17 @@
         });
 
         // Cada serviço abre o WhatsApp já com o nome dele na mensagem
+        // Com AGENDA_URL preenchido, abre a agenda online; senão, abre o WhatsApp
         document.querySelectorAll('[data-servico]').forEach(a => {
-            a.href = WA + encodeURIComponent('Olá! Gostaria de agendar: ' + a.dataset.servico + '.');
+            a.href = AGENDA_URL || WA + encodeURIComponent('Olá! Gostaria de agendar: ' + a.dataset.servico + '.');
             a.target = '_blank';
             a.rel = 'noopener';
         });
+        if (AGENDA_URL) {
+            const btn = document.getElementById('btn-agendar');
+            btn.href = AGENDA_URL;
+            btn.textContent = 'Agendar horário';
+        }
 
         // Aberto agora / fechado (horário de Brasília)
         (function () {

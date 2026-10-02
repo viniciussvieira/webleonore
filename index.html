@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leonore | Barbearia e Estúdio de Beleza em Palhoça - SC</title>
+    <meta name="description" content="Barboterapia, corte com visagismo, sobrancelha, maquiagem e cílios em Palhoça - SC. Agende pelo WhatsApp.">
+    <meta name="theme-color" content="#080706">
+    <meta property="og:title" content="Leonore | Barbearia e Estúdio de Beleza">
+    <meta property="og:description" content="Há muita beleza na tua singularidade. Agende seu horário pelo WhatsApp.">
+    <meta property="og:image" content="logo-leonore.png">
+    <link rel="icon" type="image/svg+xml" href="leonore_icon.svg">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --gold: #C19A6B;
+            --gold-light: #d8b88c;
+            --bg: #080706;
+            --surface: #12100d;
+            --line: #26221d;
+            --text: #F2EEE8;
+            --muted: #A19A90;
+            --serif: 'Cormorant Garamond', Georgia, serif;
+            --sans: 'Montserrat', system-ui, sans-serif;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; scroll-padding-top: 90px; }
+        body {
+            font-family: var(--sans);
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+        img { max-width: 100%; display: block; }
+        a { color: inherit; }
+        :focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+        h1, h2, h3 { font-family: var(--serif); font-weight: 500; line-height: 1.1; }
+
+        /* HEADER */
+        header {
+            position: sticky; top: 0; z-index: 100;
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 14px 60px;
+            background: rgba(8, 7, 6, .88);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--line);
+        }
+        .logo img { height: 56px; width: auto; }
+        nav ul { list-style: none; display: flex; align-items: center; gap: 36px; }
+        nav a {
+            text-decoration: none; color: var(--muted);
+            font-size: 13px; letter-spacing: 1.5px; font-weight: 500;
+            transition: color .25s;
+        }
+        nav a:hover { color: var(--gold); }
+        nav a.perfumaria-link {
+            color: var(--gold); border: 1px solid var(--gold);
+            padding: 8px 20px; border-radius: 30px;
+        }
+        nav a.perfumaria-link:hover { background: var(--gold); color: #000; }
+        .menu-toggle {
+            display: none; background: none; border: 1px solid var(--line);
+            color: var(--gold); width: 44px; height: 44px; border-radius: 4px;
+            font-size: 22px; cursor: pointer;
+        }
+
+        /* BOTÕES */
+        .btn {
+            display: inline-flex; align-items: center; gap: 10px;
+            padding: 16px 34px; border-radius: 2px;
+            font: 600 13px var(--sans); letter-spacing: 1.5px;
+            text-decoration: none; cursor: pointer; border: 1px solid var(--gold);
+            transition: background .25s, color .25s, border-color .25s;
+        }
+        .btn-solid { background: var(--gold); color: #0a0a0a; }
+        .btn-solid:hover { background: var(--gold-light); border-color: var(--gold-light); }
+        .btn-ghost { background: transparent; color: var(--gold); }
+        .btn-ghost:hover { background: var(--gold); color: #0a0a0a; }
+
+        /* HERO */
+        .hero {
+            position: relative; min-height: 88vh;
+            display: flex; align-items: center;
+            padding: 80px 80px; overflow: hidden;
+            background: radial-gradient(circle at 75% 40%, #17130e 0%, var(--bg) 65%);
+        }
+        .hero-photo {
+            position: absolute; top: 0; right: 0; bottom: 0; width: 55%;
+            animation: reveal 1.4s ease-out both;
+        }
+        .hero-photo { display: flex; align-items: center; justify-content: center; }
+        .hero-photo img { width: min(480px, 80%); height: auto; }
+        @keyframes reveal { from { opacity: 0; transform: scale(1.04); } to { opacity: 1; transform: none; } }
+        .hero-content { position: relative; max-width: 620px; }
+        .hero h1 { font-size: clamp(46px, 6.4vw, 88px); font-weight: 400; margin-bottom: 26px; }
+        .hero h1 em { font-style: italic; color: var(--gold-light); }
+        .hero p { font-size: 17px; font-weight: 300; color: var(--muted); max-width: 480px; margin-bottom: 38px; }
+        .hero-actions { display: flex; flex-wrap: wrap; gap: 16px; }
+
+        /* FAIXA DE HORÁRIO */
+        .info-bar {
+            display: flex; flex-wrap: wrap; justify-content: space-between; gap: 14px 40px;
+            padding: 22px 80px; background: var(--surface);
+            border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
+            font-size: 14px; color: var(--muted);
+        }
+        .info-bar strong { color: var(--text); font-weight: 500; }
+        .status { display: inline-flex; align-items: center; gap: 9px; }
+        .status::before { content: ""; width: 9px; height: 9px; border-radius: 50%; background: #777; }
+        .status.open::before { background: #5fbf7a; }
+        .status.closed::before { background: #c0614f; }
+
+        /* SERVIÇOS */
+        .services { padding: 120px 80px; max-width: 1200px; margin: 0 auto; }
+        .section-head {
+            display: flex; justify-content: space-between; align-items: flex-end;
+            flex-wrap: wrap; gap: 24px; margin-bottom: 50px;
+        }
+        .section-title { font-size: clamp(38px, 4.5vw, 56px); font-weight: 400; }
+        .tabs { display: flex; gap: 4px; padding: 4px; border: 1px solid var(--line); border-radius: 40px; }
+        .tab {
+            background: none; border: none; color: var(--muted);
+            font: 500 13px var(--sans); letter-spacing: 1px;
+            padding: 11px 28px; border-radius: 30px; cursor: pointer;
+            transition: background .25s, color .25s;
+        }
+        .tab[aria-selected="true"] { background: var(--gold); color: #0a0a0a; font-weight: 600; }
+        .service-list { list-style: none; }
+        .service-list[hidden] { display: none; }
+        .service {
+            display: grid; grid-template-columns: 1fr 1.3fr auto;
+            align-items: center; gap: 40px;
+            padding: 34px 0; border-top: 1px solid var(--line);
+        }
+        .service:last-child { border-bottom: 1px solid var(--line); }
+        .service h3 { font-size: 32px; }
+        .service p { font-size: 15px; font-weight: 300; color: var(--muted); }
+        .service a {
+            font-size: 13px; font-weight: 500; letter-spacing: 1px;
+            color: var(--gold); text-decoration: none; white-space: nowrap;
+            border-bottom: 1px solid transparent; padding-bottom: 2px;
+        }
+        .service a:hover { border-color: var(--gold); }
+
+        /* GALERIA */
+        .gallery { padding: 100px 80px 120px; background: var(--surface); border-top: 1px solid var(--line); }
+        .gallery-inner { max-width: 1200px; margin: 0 auto; }
+        .gallery .section-head { margin-bottom: 40px; }
+        .gallery p { color: var(--muted); font-weight: 300; margin-top: 10px; }
+
+        /* CONTATO */
+        footer { padding: 100px 80px 40px; border-top: 1px solid var(--line); }
+        .footer-grid {
+            max-width: 1200px; margin: 0 auto;
+            display: grid; grid-template-columns: 1.2fr 1fr 1fr; gap: 60px;
+        }
+        .footer-brand img { height: 110px; width: auto; margin-bottom: 20px; }
+        .footer-brand p, .footer-col p { color: var(--muted); font-size: 14px; font-weight: 300; margin-bottom: 10px; }
+        .footer-col h3 { font-size: 26px; margin-bottom: 18px; color: var(--gold-light); }
+        .footer-col a { color: var(--text); text-decoration: none; border-bottom: 1px solid var(--line); }
+        .footer-col a:hover { color: var(--gold); border-color: var(--gold); }
+        .footer-col .links { display: flex; flex-direction: column; gap: 12px; align-items: flex-start; font-size: 14px; }
+        .footer-bottom {
+            max-width: 1200px; margin: 70px auto 0; padding-top: 28px;
+            border-top: 1px solid var(--line);
+            display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px;
+            font-size: 12px; color: var(--muted);
+        }
+
+        /* WHATSAPP FLUTUANTE */
+        .wa-float {
+            position: fixed; right: 22px; bottom: 22px; z-index: 90;
+            width: 58px; height: 58px; border-radius: 50%;
+            background: var(--gold); color: #0a0a0a;
+            display: grid; place-items: center;
+            box-shadow: 0 8px 24px rgba(0,0,0,.5);
+            transition: transform .25s, background .25s;
+        }
+        .wa-float:hover { transform: translateY(-3px); background: var(--gold-light); }
+        .wa-float svg { width: 28px; height: 28px; fill: currentColor; }
+
+        /* MOBILE */
+        @media (max-width: 968px) {
+            header { padding: 12px 24px; flex-wrap: wrap; }
+            .logo img { height: 46px; }
+            .menu-toggle { display: grid; place-items: center; }
+            nav { width: 100%; }
+            nav ul {
+                display: none; flex-direction: column; gap: 6px;
+                padding: 16px 0 10px; margin-top: 12px; border-top: 1px solid var(--line);
+            }
+            nav ul.open { display: flex; }
+            nav li { width: 100%; text-align: center; }
+            nav a { display: block; padding: 12px; font-size: 14px; }
+            nav a.perfumaria-link { display: inline-block; margin-top: 6px; }
+
+            .hero { flex-direction: column; justify-content: flex-end; min-height: 0; padding: 0 24px 60px; }
+            .hero-photo { position: relative; width: 100%; height: auto; margin: 0 0 30px; padding-top: 30px; }
+            .hero-photo img { width: min(300px, 70%); }
+            .hero-content { text-align: left; }
+            .info-bar { padding: 20px 24px; flex-direction: column; }
+            .services { padding: 70px 24px; }
+            .service { grid-template-columns: 1fr; gap: 10px; padding: 26px 0; }
+            .service h3 { font-size: 28px; }
+            .gallery { padding: 70px 24px; }
+            footer { padding: 70px 24px 30px; }
+            .footer-grid { grid-template-columns: 1fr; gap: 44px; }
+            .footer-bottom { flex-direction: column; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            html { scroll-behavior: auto; }
+            .hero-photo { animation: none; }
+            * { transition: none !important; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="#inicio" class="logo" aria-label="Leonore, início">
+            <img src="logo-leonore2.svg" alt="Leonore Estúdio de Beleza">
+        </a>
+        <button class="menu-toggle" id="menu-toggle" aria-label="Abrir menu" aria-expanded="false" aria-controls="nav-menu">☰</button>
+        <nav>
+            <ul id="nav-menu">
+                <li><a href="#inicio">Início</a></li>
+                <li><a href="#servicos">Serviços</a></li>
+                <li><a href="#galeria">Galeria</a></li>
+                <li><a href="#contato">Contato</a></li>
+                <li><a href="perfumaria.html" class="perfumaria-link">Perfumaria</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero" id="inicio">
+            <div class="hero-photo">
+                <img src="logo-leonore2.svg" alt="Leonore" width="514" height="326">
+            </div>
+            <div class="hero-content">
+                <h1>Há muita beleza na tua <em>singularidade</em></h1>
+                <p>Barboterapia, corte com visagismo e cuidados de beleza para quem leva o próprio estilo a sério. Em Palhoça, Santa Catarina.</p>
+                <div class="hero-actions">
+                    <a href="https://wa.me/554884747257?text=Ol%C3%A1!%20Gostaria%20de%20agendar%20um%20hor%C3%A1rio." class="btn btn-solid" target="_blank" rel="noopener">Agendar pelo WhatsApp</a>
+                    <a href="#servicos" class="btn btn-ghost">Ver serviços</a>
+                </div>
+            </div>
+        </section>
+
+        <div class="info-bar">
+            <span class="status" id="status">Segunda a sábado, 9h às 23h</span>
+            <span><strong>Rua dos Cedros, 155</strong> · São Sebastião, Palhoça - SC</span>
+            <span>Domingos: atendimento VIP com horário marcado</span>
+        </div>
+
+        <section class="services" id="servicos">
+            <div class="section-head">
+                <h2 class="section-title">Serviços</h2>
+                <div class="tabs" role="tablist" aria-label="Categoria de serviços">
+                    <button class="tab" role="tab" id="tab-masculino" aria-selected="true" aria-controls="lista-masculino" data-target="masculino">Masculino</button>
+                    <button class="tab" role="tab" id="tab-feminino" aria-selected="false" aria-controls="lista-feminino" data-target="feminino">Feminino</button>
+                </div>
+            </div>
+
+            <ul class="service-list" id="lista-masculino" role="tabpanel" aria-labelledby="tab-masculino">
+                <li class="service">
+                    <h3>Corte clássico e moderno</h3>
+                    <p>Tesoura, degradê e consultoria de visagismo para o corte que combina com o seu rosto.</p>
+                    <a href="#" data-servico="Corte clássico e moderno">Agendar</a>
+                </li>
+                <li class="service">
+                    <h3>Barboterapia</h3>
+                    <p>Alinhamento da barba, toalha quente e dermocosméticos premium.</p>
+                    <a href="#" data-servico="Barboterapia">Agendar</a>
+                </li>
+                <li class="service">
+                    <h3>Sobrancelha masculina</h3>
+                    <p>Limpeza natural que mantém a harmonia e o traço do seu rosto.</p>
+                    <a href="#" data-servico="Sobrancelha masculina">Agendar</a>
+                </li>
+            </ul>
+
+            <ul class="service-list" id="lista-feminino" role="tabpanel" aria-labelledby="tab-feminino" hidden>
+                <li class="service">
+                    <h3>Maquiagem</h3>
+                    <p>Social, para noivas e eventos, com produtos de alta fixação.</p>
+                    <a href="#" data-servico="Maquiagem">Agendar</a>
+                </li>
+                <li class="service">
+                    <h3>Design de sobrancelhas</h3>
+                    <p>Mapeamento facial completo e alinhamento milimétrico.</p>
+                    <a href="#" data-servico="Design de sobrancelhas">Agendar</a>
+                </li>
+                <li class="service">
+                    <h3>Cílios</h3>
+                    <p>Extensão clássica, volume brasileiro e lash lifting.</p>
+                    <a href="#" data-servico="Cílios">Agendar</a>
+                </li>
+                <li class="service">
+                    <h3>Cabelo</h3>
+                    <p>Penteados, tratamentos de reestruturação e finalizações.</p>
+                    <a href="#" data-servico="Cabelo">Agendar</a>
+                </li>
+            </ul>
+        </section>
+
+        <section class="gallery" id="galeria">
+            <div class="gallery-inner">
+                <div class="section-head">
+                    <div>
+                        <h2 class="section-title">Galeria</h2>
+                        <p>Trabalhos recentes direto do nosso Instagram.</p>
+                    </div>
+                    <a href="https://www.instagram.com/leonoreoficial/" class="btn btn-ghost" target="_blank" rel="noopener">Seguir @leonoreoficial</a>
+                </div>
+                <script src="https://elfsightcdn.com/platform.js" async></script>
+                <div class="elfsight-app-035cc1bb-9690-4d04-b3b2-095f91f588f1" data-elfsight-app-lazy></div>
+            </div>
+        </section>
+    </main>
+
+    <footer id="contato">
+        <div class="footer-grid">
+            <div class="footer-brand">
+                <img src="logo-leonore2.svg" alt="Leonore Estúdio de Beleza">
+                <p>Um espaço para realçar a sua essência, com serviços de barbearia e beleza feitos com atenção a cada detalhe.</p>
+            </div>
+            <div class="footer-col">
+                <h3>Onde e quando</h3>
+                <p>Rua dos Cedros, 155<br>São Sebastião, Palhoça - SC</p>
+                <p>Segunda a sábado, 9h às 23h<br>Domingos e horários especiais sob consulta</p>
+                <p><a href="https://www.google.com/maps/search/?api=1&query=Rua+dos+Cedros+155+S%C3%A3o+Sebasti%C3%A3o+Palho%C3%A7a+SC" target="_blank" rel="noopener">Abrir no mapa</a></p>
+            </div>
+            <div class="footer-col">
+                <h3>Fale com a gente</h3>
+                <div class="links">
+                    <a href="https://wa.me/554884747257" target="_blank" rel="noopener">WhatsApp: dúvidas e agendamentos</a>
+                    <a href="https://www.instagram.com/leonoreoficial/" target="_blank" rel="noopener">Instagram: @leonoreoficial</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Leonore. Todos os direitos reservados.</p>
+            <p>Estúdio de Beleza e Barbearia</p>
+        </div>
+    </footer>
+
+    <a class="wa-float" href="https://wa.me/554884747257?text=Ol%C3%A1!%20Gostaria%20de%20agendar%20um%20hor%C3%A1rio." target="_blank" rel="noopener" aria-label="Agendar pelo WhatsApp">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12.04 2a9.9 9.9 0 0 0-8.5 14.9L2 22l5.25-1.38A9.9 9.9 0 1 0 12.04 2Zm0 18.1a8.2 8.2 0 0 1-4.18-1.14l-.3-.18-3.12.82.83-3.04-.2-.31a8.2 8.2 0 1 1 6.97 3.85Zm4.5-6.14c-.25-.12-1.46-.72-1.69-.8-.23-.09-.39-.12-.55.12-.17.25-.64.8-.78.96-.14.17-.29.19-.54.06-.25-.12-1.04-.38-1.98-1.22-.73-.65-1.23-1.46-1.37-1.7-.14-.25-.02-.38.1-.5.11-.11.25-.29.37-.43.12-.15.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.55-1.34-.76-1.83-.2-.48-.4-.41-.55-.42h-.47c-.17 0-.43.06-.66.31-.23.25-.86.84-.86 2.05s.88 2.38 1 2.55c.12.16 1.73 2.64 4.2 3.7.59.26 1.05.41 1.4.52.59.19 1.13.16 1.55.1.47-.07 1.46-.6 1.66-1.17.2-.58.2-1.07.14-1.17-.06-.1-.23-.16-.48-.29Z"/></svg>
+    </a>
+
+    <script>
+        const WA = 'https://wa.me/554884747257?text=';
+
+        // Menu mobile
+        const toggle = document.getElementById('menu-toggle');
+        const menu = document.getElementById('nav-menu');
+        function setMenu(open) {
+            menu.classList.toggle('open', open);
+            toggle.setAttribute('aria-expanded', open);
+            toggle.textContent = open ? '✕' : '☰';
+        }
+        toggle.addEventListener('click', () => setMenu(!menu.classList.contains('open')));
+        menu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => setMenu(false)));
+
+        // Abas de serviços
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.tab').forEach(t => t.setAttribute('aria-selected', t === tab));
+                document.querySelectorAll('.service-list').forEach(l => l.hidden = l.id !== 'lista-' + tab.dataset.target);
+            });
+        });
+
+        // Cada serviço abre o WhatsApp já com o nome dele na mensagem
+        document.querySelectorAll('[data-servico]').forEach(a => {
+            a.href = WA + encodeURIComponent('Olá! Gostaria de agendar: ' + a.dataset.servico + '.');
+            a.target = '_blank';
+            a.rel = 'noopener';
+        });
+
+        // Aberto agora / fechado (horário de Brasília)
+        (function () {
+            const el = document.getElementById('status');
+            const now = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/Sao_Paulo' }));
+            const day = now.getDay();
+            const hour = now.getHours() + now.getMinutes() / 60;
+            if (day >= 1 && day <= 6 && hour >= 9 && hour < 23) {
+                el.textContent = 'Aberto agora, fechamos às 23h';
+                el.classList.add('open');
+            } else if (day === 0) {
+                el.textContent = 'Fechado hoje, atendimento VIP com horário marcado';
+                el.classList.add('closed');
+            } else {
+                el.textContent = 'Fechado agora, abrimos às 9h';
+                el.classList.add('closed');
+            }
+        })();
+    </script>
+</body>
+</html>

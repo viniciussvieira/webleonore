@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfumaria em Manutenção | Leonore</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #C19A6B;
+            --primary-hover: #d4ab7b;
+            --bg-black: #050505;
+            --bg-card: #111111;
+            --border-subtle: #222222;
+            --text-light: #F4F4F4;
+            --text-muted: #888888;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--bg-black);
+            color: var(--text-light);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            overflow-x: hidden;
+        }
+
+        h1, h2 {
+            font-family: 'Playfair Display', serif;
+            font-weight: 600;
+        }
+
+        /* --- HEADER SIMPLIFICADO --- */
+        header {
+            background-color: var(--bg-black);
+            padding: 25px 60px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .logo img {
+            height: 70px;
+            width: auto;
+        }
+
+        .back-home {
+            text-decoration: none;
+            color: var(--text-muted);
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .back-home:hover {
+            color: var(--primary);
+        }
+
+        /* --- CONTEÚDO DE MANUTENÇÃO (SPLIT) --- */
+        .maintenance-container {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            align-items: center;
+            padding: 60px 80px;
+            gap: 60px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .maintenance-info {
+            max-width: 550px;
+        }
+
+        .maintenance-tag {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            color: var(--primary);
+            margin-bottom: 20px;
+            display: inline-block;
+            font-weight: 600;
+        }
+
+        .maintenance-info h1 {
+            font-size: 48px;
+            line-height: 1.2;
+            margin-bottom: 20px;
+            letter-spacing: -0.5px;
+        }
+
+        .maintenance-info p {
+            font-size: 15px;
+            color: var(--text-muted);
+            margin-bottom: 35px;
+            font-weight: 300;
+            line-height: 1.8;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 16px 36px;
+            background-color: transparent;
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            font-weight: 500;
+            text-decoration: none;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: all 0.3s ease;
+            border-radius: 2px;
+        }
+
+        .btn:hover {
+            background-color: var(--primary);
+            color: #000;
+            box-shadow: 0 5px 20px rgba(193, 154, 107, 0.3);
+        }
+
+        .maintenance-image-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .maintenance-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+            max-width: 450px;
+            width: 100%;
+        }
+
+        .maintenance-card img {
+            width: 100%;
+            height: auto;
+            border-radius: 4px;
+            filter: contrast(105%) saturate(95%);
+            display: block;
+        }
+
+        /* --- FOOTER SIMPLES --- */
+        footer {
+            background-color: var(--bg-black);
+            padding: 30px 60px;
+            border-top: 1px solid var(--border-subtle);
+            text-align: center;
+            font-size: 11px;
+            color: var(--text-muted);
+            letter-spacing: 1px;
+        }
+
+        /* --- RESPONSIVIDADE --- */
+        @media (max-width: 968px) {
+            header {
+                padding: 20px 30px;
+            }
+            .maintenance-container {
+                grid-template-columns: 1fr;
+                padding: 40px 20px;
+                text-align: center;
+                gap: 40px;
+            }
+            .maintenance-info {
+                max-width: 100%;
+            }
+            .maintenance-info h1 {
+                font-size: 34px;
+            }
+            .maintenance-card {
+                max-width: 350px;
+                margin: 0 auto;
+            }
+            footer {
+                padding: 25px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- CABEÇALHO -->
+    <header>
+        <a href="index2.html" class="logo">
+            <img src="logo-leonore2.png" alt="Leonore Estúdio de Beleza">
+        </a>
+        <a href="index2.html" class="back-home">← Voltar ao Início</a>
+    </header>
+
+    <!-- CONTEÚDO PRINCIPAL (EM MANUTENÇÃO) -->
+    <main class="maintenance-container">
+        <div class="maintenance-info">
+            <span class="maintenance-tag">Seção Exclusiva</span>
+            <h1>Perfumaria em Manutenção</h1>
+            <p>Estamos preparando uma curadoria olfativa extraordinária para você. Em breve, nossa linha exclusiva de fragrâncias estará disponível com toda a sofisticação que você merece.</p>
+            <a href="index2.html" class="btn">Retornar à Página Principal</a>
+        </div>
+
+        <div class="maintenance-image-wrapper">
+            <div class="maintenance-card">
+                <img src="manutencao.png" alt="Leonore Perfumaria em Manutenção">
+            </div>
+        </div>
+    </main>
+
+    <!-- RODAPÉ -->
+    <footer>
+        <p>&copy; 2026 LEONORE. TODOS OS DIREITOS RESERVADOS.</p>
+    </footer>
+
+</body>
+</html>

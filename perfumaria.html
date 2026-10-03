@@ -284,12 +284,14 @@
         const PARCELAS = 10;        // até 10x sem juros no cartão
         const DESCONTO_PIX = 0.10;  // 10% de desconto no Pix
 
-        // Produtos. Para cada perfume:
-        //   nome, categoria ('Masculino' | 'Feminino' | 'Unissex'), ml, preco,
-        //   notas (descrição curta), foto (opcional, ex.: 'perfumes/ambar.jpg'),
-        //   destaque (opcional, ex.: 'Novo'),
-        const EXEMPLO = true; // mude para false quando os produtos reais estiverem cadastrados
-        const PRODUTOS = [
+        // PLANILHA GOOGLE (painel dos perfumes)
+        // Cole aqui o link CSV de "Publicar na Web" da planilha.
+        // Vazio = usa os produtos de exemplo abaixo.
+        const PLANILHA_CSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRiJyyvzV6KoiTJEoWDmsg3z1qfVqN-qEU2pFu01sd1z85Pqf_FVR1oKPqME3iBp0ruph0M9z_CLRbs/pub?gid=63467096&single=true&output=csv';
+
+        // Produtos de exemplo (usados só se a planilha estiver vazia ou fora do ar)
+        let EXEMPLO = true;
+        let PRODUTOS = [
             { id: 'ambar-noir',   nome: 'Âmbar Noir',     categoria: 'Masculino', ml: 100, preco: 289.90, notas: 'Âmbar, couro e pimenta-preta. Intenso e noturno.', destaque: 'Mais vendido' },
             { id: 'rosa-veludo',  nome: 'Rosa Veludo',    categoria: 'Feminino',  ml: 100, preco: 279.90, notas: 'Rosa, framboesa e almíscar. Elegante e marcante.', destaque: 'Novo' },
             { id: 'oud-dourado',  nome: 'Oud Dourado',    categoria: 'Unissex',   ml: 100, preco: 349.90, notas: 'Oud, açafrão e sândalo. Sofisticado.' }
@@ -326,7 +328,7 @@
                         ${p.foto ? `<img src="${p.foto}" alt="${p.nome}" loading="lazy">` : frasco(p)}
                     </div>
                     <div class="card-body">
-                        <span class="card-cat">${p.categoria} · ${p.ml} ml</span>
+                        <span class="card-cat">${p.categoria}${p.ml ? ` · ${p.ml} ml` : ''}</span>
                         <h3>${p.nome}</h3>
                         <p class="card-notes">${p.notas || ''}</p>
                         <div class="card-foot">
@@ -391,7 +393,7 @@
                 ? `Pagamento: Pix com 10% de desconto – ${brl(tPix)}`
                 : (np === 1 ? `Pagamento: cartão à vista – ${brl(t)}` : `Pagamento: cartão em ${np}x de ${brl(t / np)} sem juros`);
             const msg = 'Olá! Quero fazer um pedido na Perfumaria Leonore:\n\n'
-                + lista.map(({ p, q }) => `• ${q}x ${p.nome} (${p.ml} ml) – ${brl(p.preco * q)}`).join('\n')
+                + lista.map(({ p, q }) => `• ${q}x ${p.nome}${p.ml ? ` (${p.ml} ml)` : ''} – ${brl(p.preco * q)}`).join('\n')
                 + `\n\nSubtotal: ${brl(t)}`
                 + `\n${pagTxt}`;
             $('checkout-wa').href = `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(msg)}`;
@@ -424,9 +426,60 @@
             clearTimeout(tt); tt = setTimeout(() => $('toast').classList.remove('show'), 1800);
         }
 
-        $('sample-note').hidden = !EXEMPLO;
-        renderGrid();
-        renderCart();
+        /* ---------- Leitura da planilha ---------- */
+        function parseCSV(txt) {
+            const rows = []; let row = [], cell = '', q = false;
+            for (let i = 0; i < txt.length; i++) {
+                const c = txt[i];
+                if (q) {
+                    if (c === '"' && txt[i + 1] === '"') { cell += '"'; i++; }
+                    else if (c === '"') q = false;
+                    else cell += c;
+                } else if (c === '"') q = true;
+                else if (c === ',') { row.push(cell); cell = ''; }
+                else if (c === '\n' || c === '\r') {
+                    if (c === '\r' && txt[i + 1] === '\n') i++;
+                    row.push(cell); rows.push(row); row = []; cell = '';
+                } else cell += c;
+            }
+            if (cell || row.length) { row.push(cell); rows.push(row); }
+            return rows.filter(r => r.some(x => x.trim()));
+        }
+        const limpa = v => String(v || '').trim().replace(/[<>&"]/g, c => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;' }[c]));
+        const semAcento = v => String(v || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
+        const numero = v => parseFloat(String(v).replace(/[^\d,.-]/g, '').replace(/\.(?=\d{3}(\D|$))/g, '').replace(',', '.')) || 0;
+        function fotoUrl(v) {
+            v = String(v || '').trim(); if (!v) return '';
+            const id = (v.match(/\/d\/([\w-]{20,})/) || v.match(/[?&]id=([\w-]{20,})/) || [])[1];
+            return id ? `https://drive.google.com/thumbnail?id=${id}&sz=w1000` : limpa(v);
+        }
+        function categoria(v) {
+            const c = semAcento(v);
+            return c.startsWith('fem') ? 'Feminino' : c.startsWith('uni') ? 'Unissex' : 'Masculino';
+        }
+        async function carregarPlanilha() {
+            if (!PLANILHA_CSV) return;
+            try {
+                const r = await fetch(PLANILHA_CSV + (PLANILHA_CSV.includes('?') ? '&' : '?') + 't=' + Date.now());
+                if (!r.ok) throw new Error(r.status);
+                const [cab, ...linhas] = parseCSV(await r.text());
+                const col = nome => cab.findIndex(h => semAcento(h) === nome);
+                const C = { nome: col('nome'), cat: col('categoria'), ml: col('ml'), preco: col('preco'), notas: col('descricao'), foto: col('foto'), dest: col('destaque'), disp: col('disponivel') };
+                const lista = linhas.map(l => ({
+                    nome: limpa(l[C.nome]), categoria: categoria(l[C.cat]), ml: numero(l[C.ml]), preco: numero(l[C.preco]),
+                    notas: limpa(l[C.notas]), foto: fotoUrl(l[C.foto]), destaque: limpa(l[C.dest]),
+                    disponivel: !['nao', 'n', 'esgotado', 'false', '0'].includes(semAcento(l[C.disp]))
+                })).filter(p => p.nome && p.preco > 0 && p.disponivel)
+                  .map(p => ({ ...p, id: semAcento(p.nome).replace(/[^a-z0-9]+/g, '-') }));
+                if (lista.length) { PRODUTOS = lista; EXEMPLO = false; }
+            } catch (e) { console.warn('Planilha indisponível, usando exemplos.', e); }
+        }
+
+        carregarPlanilha().finally(() => {
+            $('sample-note').hidden = !EXEMPLO;
+            renderGrid();
+            renderCart();
+        });
     </script>
 </body>
 </html>

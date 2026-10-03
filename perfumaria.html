@@ -165,6 +165,11 @@
         .pay-opt:has(input:checked) { border-color: var(--gold); }
         .pay-opt input { accent-color: var(--gold); margin-right: 10px; }
         .pay-opt b { color: var(--gold-light); font-weight: 600; white-space: nowrap; }
+        .parcelas {
+            background: var(--bg); color: var(--gold-light); border: 1px solid var(--line); border-radius: 4px;
+            font: 600 13px var(--sans); padding: 6px 8px; cursor: pointer;
+        }
+        .parcelas:disabled { opacity: .4; cursor: default; }
         .foot-note { font-size: 11px; color: var(--muted); text-align: center; }
 
         .toast {
@@ -259,7 +264,7 @@
             <div class="total"><span>Total</span><strong id="cart-total">R$ 0,00</strong></div>
             <fieldset class="pay-opts" style="border:0">
                 <legend>Forma de pagamento</legend>
-                <label class="pay-opt"><span><input type="radio" name="pag" value="cartao" checked>Cartão em até 10x sem juros</span><b id="opt-cartao"></b></label>
+                <label class="pay-opt"><span><input type="radio" name="pag" value="cartao" checked>Cartão sem juros</span><select class="parcelas" id="parcelas" aria-label="Número de parcelas"></select></label>
                 <label class="pay-opt"><span><input type="radio" name="pag" value="pix">Pix com 10% de desconto</span><b id="opt-pix"></b></label>
             </fieldset>
             <a class="btn btn-solid" id="checkout-wa" href="#" target="_blank" rel="noopener">Enviar pedido pelo WhatsApp</a>
@@ -373,7 +378,10 @@
             const tPix = t * (1 - DESCONTO_PIX);
             const pag = document.querySelector('input[name="pag"]:checked').value;
             $('cart-total').textContent = brl(pag === 'pix' ? tPix : t);
-            $('opt-cartao').textContent = `${PARCELAS}x ${brl(t / PARCELAS)}`;
+            const np = +$('parcelas').value || PARCELAS;
+            $('parcelas').innerHTML = Array.from({ length: PARCELAS }, (_, i) => i + 1)
+                .map(k => `<option value="${k}" ${k === np ? 'selected' : ''}>${k}x ${brl(t / k)}</option>`).join('');
+            $('parcelas').style.opacity = pag === 'cartao' ? 1 : .45;
             $('opt-pix').textContent = brl(tPix);
 
             const vazio = lista.length === 0;
@@ -381,7 +389,7 @@
 
             const pagTxt = pag === 'pix'
                 ? `Pagamento: Pix com 10% de desconto – ${brl(tPix)}`
-                : `Pagamento: cartão em até ${PARCELAS}x sem juros (${PARCELAS}x de ${brl(t / PARCELAS)})`;
+                : (np === 1 ? `Pagamento: cartão à vista – ${brl(t)}` : `Pagamento: cartão em ${np}x de ${brl(t / np)} sem juros`);
             const msg = 'Olá! Quero fazer um pedido na Perfumaria Leonore:\n\n'
                 + lista.map(({ p, q }) => `• ${q}x ${p.nome} (${p.ml} ml) – ${brl(p.preco * q)}`).join('\n')
                 + `\n\nSubtotal: ${brl(t)}`
@@ -396,6 +404,7 @@
         });
 
         document.querySelectorAll('input[name="pag"]').forEach(r => r.addEventListener('change', renderCart));
+        $('parcelas').addEventListener('change', () => { document.querySelector('input[value="cartao"]').checked = true; renderCart(); });
 
         // Abrir/fechar sacola
         function openCart(open) {

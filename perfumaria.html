@@ -468,7 +468,10 @@
             try {
                 const r = await fetch(PLANILHA_CSV + (PLANILHA_CSV.includes('?') ? '&' : '?') + 't=' + Date.now());
                 if (!r.ok) throw new Error(r.status);
-                const [cab, ...linhas] = parseCSV(await r.text());
+                let tabela = parseCSV(await r.text());
+                // Se a importação deixou tudo numa coluna só, separa as vírgulas de novo
+                if (tabela[0] && tabela[0].length === 1 && tabela[0][0].includes(',')) tabela = parseCSV(tabela.map(l => l[0]).join('\n'));
+                const [cab, ...linhas] = tabela;
                 const col = nome => cab.findIndex(h => semAcento(h) === nome);
                 const C = { nome: col('nome'), cat: col('categoria'), ml: col('ml'), preco: col('preco'), notas: col('descricao'), foto: col('foto'), dest: col('destaque'), disp: col('disponivel') };
                 const lista = linhas.map(l => ({

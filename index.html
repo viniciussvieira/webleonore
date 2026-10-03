@@ -472,23 +472,76 @@
             btn.textContent = 'Agendar horário';
         }
 
-        // Aberto agora / fechado (horário de Brasília)
-        (function () {
+        // ABERTO / FECHADO (horário de Brasília)
+        // Cole aqui o link CSV de "Publicar na Web" da aba de horários.
+        // Vazio (ou planilha fora do ar) = usa o horário padrão abaixo.
+        const HORARIOS_CSV = '';
+        const DIAS = ['domingo', 'segunda', 'terca', 'quarta', 'quinta', 'sexta', 'sabado'];
+        const NOME_DIA = ['domingo', 'segunda', 'terça', 'quarta', 'quinta', 'sexta', 'sábado'];
+        let HORARIOS = {
+            segunda: { abre: '09:00', fecha: '23:00' }, terca: { abre: '09:00', fecha: '23:00' },
+            quarta:  { abre: '09:00', fecha: '23:00' }, quinta: { abre: '09:00', fecha: '23:00' },
+            sexta:   { abre: '09:00', fecha: '23:00' }, sabado: { abre: '09:00', fecha: '23:00' },
+            domingo: { abre: '', fecha: '', obs: 'Atendimento VIP com horário marcado' }
+        };
+        let AVISO = '';
+
+        const minutos = v => { const m = String(v || '').trim().match(/^(\d{1,2})(?:[:h](\d{2}))?/); return m ? (+m[1]) * 60 + (+(m[2] || 0)) : null; };
+        const hora = v => { const t = minutos(v); const h = Math.floor(t / 60) % 24, m = t % 60; return h + 'h' + (m ? String(m).padStart(2, '0') : ''); };
+
+        function mostrarStatus() {
             const el = document.getElementById('status');
-            const now = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/Sao_Paulo' }));
-            const day = now.getDay();
-            const hour = now.getHours() + now.getMinutes() / 60;
-            if (day >= 1 && day <= 6 && hour >= 9 && hour < 23) {
-                el.textContent = 'Aberto agora, fechamos às 23h';
-                el.classList.add('open');
-            } else if (day === 0) {
-                el.textContent = 'Fechado hoje, atendimento VIP com horário marcado';
-                el.classList.add('closed');
-            } else {
-                el.textContent = 'Fechado agora, abrimos às 9h';
-                el.classList.add('closed');
+            el.classList.remove('open', 'closed');
+            const agora = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/Sao_Paulo' }));
+            const d = agora.getDay(), min = agora.getHours() * 60 + agora.getMinutes();
+            if (AVISO) { el.textContent = AVISO; el.classList.add('closed'); return; }
+            const hoje = HORARIOS[DIAS[d]] || {};
+            const ab = minutos(hoje.abre), fe0 = minutos(hoje.fecha);
+            const fe = fe0 !== null && ab !== null && fe0 <= ab ? fe0 + 1440 : fe0; // fecha depois da meia-noite
+            if (ab !== null && fe !== null && min >= ab && min < fe) {
+                el.textContent = `Aberto agora, fechamos às ${hora(hoje.fecha)}`; el.classList.add('open'); return;
             }
-        })();
+            if (ab !== null && min < ab) {
+                el.textContent = `Fechado agora, abrimos às ${hora(hoje.abre)}`; el.classList.add('closed'); return;
+            }
+            // Próximo dia com horário
+            let prox = '';
+            for (let i = 1; i <= 7; i++) {
+                const k = (d + i) % 7, h = HORARIOS[DIAS[k]] || {};
+                if (minutos(h.abre) !== null) { prox = `abrimos ${i === 1 ? 'amanhã' : NOME_DIA[k]} às ${hora(h.abre)}`; break; }
+            }
+            const semHorario = ab === null;
+            el.textContent = semHorario
+                ? `Fechado hoje${hoje.obs ? ', ' + hoje.obs.charAt(0).toLowerCase() + hoje.obs.slice(1) : ''}${!hoje.obs && prox ? ', ' + prox : ''}`
+                : `Fechado agora${prox ? ', ' + prox : ''}`;
+            el.classList.add('closed');
+        }
+
+        async function carregarHorarios() {
+            if (!HORARIOS_CSV) return;
+            try {
+                const r = await fetch(HORARIOS_CSV + (HORARIOS_CSV.includes('?') ? '&' : '?') + 't=' + Date.now());
+                if (!r.ok) throw new Error(r.status);
+                let tabela = parseCSV(await r.text());
+                if (tabela[0] && tabela[0].length === 1 && tabela[0][0].includes(',')) tabela = parseCSV(tabela.map(l => l[0]).join('\n'));
+                const [cab, ...linhas] = tabela;
+                const col = n => cab.findIndex(h => semAcento(h) === n);
+                const C = { dia: col('dia'), abre: col('abre'), fecha: col('fecha'), obs: col('observacao') };
+                const novo = {}; let aviso = '';
+                linhas.forEach(l => {
+                    const dia = semAcento(l[C.dia]).replace(/-feira/, '').replace(/\s+/g, '');
+                    const obs = C.obs >= 0 ? limpa(l[C.obs]) : '';
+                    if (dia === 'aviso') { aviso = obs || limpa(l[C.abre]); return; }
+                    const k = DIAS.find(x => dia.startsWith(x.slice(0, 3)));
+                    if (k) novo[k] = { abre: String(l[C.abre] || '').trim(), fecha: String(l[C.fecha] || '').trim(), obs };
+                });
+                if (Object.keys(novo).length) { HORARIOS = novo; AVISO = aviso; }
+            } catch (e) { console.warn('Planilha de horários indisponível, usando o horário padrão.', e); }
+        }
+
+        mostrarStatus();
+        carregarHorarios().then(mostrarStatus);
+        setInterval(mostrarStatus, 60000);
     </script>
 </body>
 </html>

@@ -139,8 +139,8 @@
         .service-list { list-style: none; }
         .service-list[hidden] { display: none; }
         .service {
-            display: grid; grid-template-columns: 1fr 1.3fr auto;
-            align-items: center; gap: 40px;
+            display: grid; grid-template-columns: 1fr 1.6fr auto;
+            align-items: center; gap: 40px; min-height: 150px;
             padding: 34px 0; border-top: 1px solid var(--line);
         }
         .service:last-child { border-bottom: 1px solid var(--line); }
@@ -216,7 +216,7 @@
             .hero-content { text-align: left; }
             .info-bar { padding: 20px 24px; flex-direction: column; }
             .services { padding: 70px 24px; }
-            .service { grid-template-columns: 1fr; gap: 10px; padding: 26px 0; }
+            .service { grid-template-columns: 1fr; gap: 10px; padding: 26px 0; min-height: 0; }
             .service h3 { font-size: 28px; }
             .gallery { padding: 70px 24px; }
             footer { padding: 70px 24px 30px; }

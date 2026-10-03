@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Perfumaria | Leonore</title>
-    <meta name="description" content="Perfumaria Leonore: fragrâncias selecionadas em Palhoça - SC. Peça pelo WhatsApp ou pague online.">
+    <meta name="description" content="Perfumaria Leonore: fragrâncias selecionadas em Palhoça - SC. Peça pelo WhatsApp: até 10x sem juros ou 10% de desconto no Pix.">
     <meta name="theme-color" content="#080706">
     <meta property="og:title" content="Perfumaria | Leonore">
-    <meta property="og:description" content="Fragrâncias selecionadas. Peça pelo WhatsApp ou pague online.">
+    <meta property="og:description" content="Fragrâncias selecionadas. Até 10x sem juros ou 10% de desconto no Pix.">
     <meta property="og:image" content="https://viniciussvieira.github.io/webleonore/logo-leonore.png">
     <link rel="icon" type="image/svg+xml" href="leonore_icon.svg">
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -122,6 +122,8 @@
         .card-notes { font-size: 13px; color: var(--muted); font-weight: 300; }
         .card-foot { margin-top: auto; padding-top: 16px; display: flex; flex-direction: column; gap: 12px; }
         .price { font-family: var(--serif); font-size: 26px; color: var(--gold-light); }
+        .terms { font-size: 12px; color: var(--muted); line-height: 1.6; margin-top: -8px; }
+        .terms b { color: var(--text); font-weight: 500; }
         .price small { font-family: var(--sans); font-size: 12px; color: var(--muted); margin-left: 6px; }
         .card-actions { display: flex; gap: 8px; }
         .card-actions .btn { flex: 1; padding: 12px 10px; font-size: 11px; }
@@ -153,10 +155,16 @@
         .total { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 4px; }
         .total span { font-size: 13px; letter-spacing: 1.5px; color: var(--muted); text-transform: uppercase; }
         .total strong { font-family: var(--serif); font-size: 32px; font-weight: 500; color: var(--gold-light); }
-        .pix-box { border: 1px dashed var(--gold); border-radius: 4px; padding: 14px; font-size: 13px; color: var(--muted); display: none; }
-        .pix-box.show { display: block; }
-        .pix-box code { display: block; color: var(--text); font-size: 14px; margin: 6px 0 10px; word-break: break-all; }
-        .pix-box button { background: none; border: none; color: var(--gold); cursor: pointer; text-decoration: underline; font-size: 13px; padding: 0; }
+        .pay-opts { display: flex; flex-direction: column; gap: 8px; }
+        .pay-opts legend { font-size: 12px; letter-spacing: 1.5px; color: var(--muted); text-transform: uppercase; margin-bottom: 6px; }
+        .pay-opt {
+            display: flex; justify-content: space-between; align-items: center; gap: 12px;
+            border: 1px solid var(--line); border-radius: 4px; padding: 12px 14px; cursor: pointer; font-size: 13px;
+            transition: border-color .2s;
+        }
+        .pay-opt:has(input:checked) { border-color: var(--gold); }
+        .pay-opt input { accent-color: var(--gold); margin-right: 10px; }
+        .pay-opt b { color: var(--gold-light); font-weight: 600; white-space: nowrap; }
         .foot-note { font-size: 11px; color: var(--muted); text-align: center; }
 
         .toast {
@@ -213,10 +221,10 @@
                 <h1>Fragrâncias com <em>assinatura</em></h1>
             </div>
             <div>
-                <p>Uma seleção de perfumes para acompanhar o seu estilo. Escolha, monte a sua sacola e finalize como preferir.</p>
+                <p>Uma seleção de perfumes para acompanhar o seu estilo. Escolha, monte a sua sacola e finalize o pedido pelo WhatsApp.</p>
                 <div class="how">
                     <span><b>1</b> Adicione os perfumes à sacola</span>
-                    <span><b>2</b> Envie o pedido pelo WhatsApp ou pague com Pix</span>
+                    <span><b>2</b> Envie o pedido pelo WhatsApp: até 10x sem juros ou 10% off no Pix</span>
                     <span><b>3</b> Retire na Leonore ou combine a entrega</span>
                 </div>
             </div>
@@ -249,15 +257,13 @@
         <div class="drawer-items" id="cart-items"></div>
         <div class="drawer-foot">
             <div class="total"><span>Total</span><strong id="cart-total">R$ 0,00</strong></div>
+            <fieldset class="pay-opts" style="border:0">
+                <legend>Forma de pagamento</legend>
+                <label class="pay-opt"><span><input type="radio" name="pag" value="cartao" checked>Cartão em até 10x sem juros</span><b id="opt-cartao"></b></label>
+                <label class="pay-opt"><span><input type="radio" name="pag" value="pix">Pix com 10% de desconto</span><b id="opt-pix"></b></label>
+            </fieldset>
             <a class="btn btn-solid" id="checkout-wa" href="#" target="_blank" rel="noopener">Enviar pedido pelo WhatsApp</a>
-            <button class="btn btn-ghost" id="checkout-pix">Pagar online com Pix</button>
-            <div class="pix-box" id="pix-box">
-                Faça um Pix de <strong id="pix-total" style="color:var(--gold-light)"></strong> para a chave:
-                <code id="pix-key"></code>
-                <button id="copy-pix">Copiar chave Pix</button>
-                <p style="margin-top:10px">Depois, toque em <b>Enviar pedido pelo WhatsApp</b> e mande o comprovante.</p>
-            </div>
-            <p class="foot-note">Retirada na Leonore ou entrega a combinar.</p>
+            <p class="foot-note">O pagamento é combinado pelo WhatsApp. Retirada na Leonore ou entrega a combinar.</p>
         </div>
     </aside>
 
@@ -269,15 +275,14 @@
            ===================================================== */
         const WHATSAPP = '554884747257';
 
-        // Chave Pix da Leonore (CPF, CNPJ, e-mail, telefone ou aleatória).
-        // Vazio = o botão "Pagar online com Pix" não aparece.
-        const PIX_CHAVE = '';
+        // Condições de pagamento (combinadas pelo WhatsApp)
+        const PARCELAS = 10;        // até 10x sem juros no cartão
+        const DESCONTO_PIX = 0.10;  // 10% de desconto no Pix
 
         // Produtos. Para cada perfume:
         //   nome, categoria ('Masculino' | 'Feminino' | 'Unissex'), ml, preco,
         //   notas (descrição curta), foto (opcional, ex.: 'perfumes/ambar.jpg'),
         //   destaque (opcional, ex.: 'Novo'),
-        //   linkPagamento (opcional: link do Mercado Pago/PagSeguro para pagar com cartão)
         const EXEMPLO = true; // mude para false quando os produtos reais estiverem cadastrados
         const PRODUTOS = [
             { id: 'ambar-noir',   nome: 'Âmbar Noir',     categoria: 'Masculino', ml: 100, preco: 289.90, notas: 'Âmbar, couro e pimenta-preta. Intenso e noturno.', destaque: 'Mais vendido' },
@@ -324,9 +329,9 @@
                         <p class="card-notes">${p.notas || ''}</p>
                         <div class="card-foot">
                             <span class="price">${brl(p.preco)}</span>
+                            <p class="terms">${PARCELAS}x de <b>${brl(p.preco / PARCELAS)}</b> sem juros<br>ou <b>${brl(p.preco * (1 - DESCONTO_PIX))}</b> no Pix</p>
                             <div class="card-actions">
                                 <button class="btn btn-solid" data-add="${p.id}">Adicionar</button>
-                                ${p.linkPagamento ? `<a class="btn btn-ghost" href="${p.linkPagamento}" target="_blank" rel="noopener">Pagar com cartão</a>` : ''}
                             </div>
                         </div>
                     </div>
@@ -367,19 +372,23 @@
                     </div>
                     <button class="remove" data-rm="${p.id}">Remover</button>
                 </div>`).join('') : '<p class="empty">Sua sacola está vazia.</p>';
-            $('cart-total').textContent = brl(total());
-            $('pix-total').textContent = brl(total());
+            const t = total();
+            const tPix = t * (1 - DESCONTO_PIX);
+            const pag = document.querySelector('input[name="pag"]:checked').value;
+            $('cart-total').textContent = brl(pag === 'pix' ? tPix : t);
+            $('opt-cartao').textContent = `${PARCELAS}x ${brl(t / PARCELAS)}`;
+            $('opt-pix').textContent = brl(tPix);
 
             const vazio = lista.length === 0;
             $('checkout-wa').toggleAttribute('disabled', vazio);
-            $('checkout-pix').toggleAttribute('disabled', vazio);
-            $('checkout-pix').hidden = !PIX_CHAVE;
-            if (vazio) $('pix-box').classList.remove('show');
 
+            const pagTxt = pag === 'pix'
+                ? `Pagamento: Pix com 10% de desconto – ${brl(tPix)}`
+                : `Pagamento: cartão em até ${PARCELAS}x sem juros (${PARCELAS}x de ${brl(t / PARCELAS)})`;
             const msg = 'Olá! Quero fazer um pedido na Perfumaria Leonore:\n\n'
                 + lista.map(({ p, q }) => `• ${q}x ${p.nome} (${p.ml} ml) – ${brl(p.preco * q)}`).join('\n')
-                + `\n\nTotal: ${brl(total())}`
-                + ($('pix-box').classList.contains('show') ? '\nPagamento: Pix (envio o comprovante)' : '');
+                + `\n\nSubtotal: ${brl(t)}`
+                + `\n${pagTxt}`;
             $('checkout-wa').href = `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(msg)}`;
         }
         $('cart-items').addEventListener('click', e => {
@@ -389,12 +398,7 @@
             if (t.dataset.rm) setQty(t.dataset.rm, 0);
         });
 
-        // Pix
-        $('pix-key').textContent = PIX_CHAVE;
-        $('checkout-pix').addEventListener('click', () => { $('pix-box').classList.toggle('show'); renderCart(); });
-        $('copy-pix').addEventListener('click', () => {
-            navigator.clipboard?.writeText(PIX_CHAVE).then(() => toast('Chave Pix copiada'), () => toast('Copie a chave manualmente'));
-        });
+        document.querySelectorAll('input[name="pag"]').forEach(r => r.addEventListener('change', renderCart));
 
         // Abrir/fechar sacola
         function openCart(open) {

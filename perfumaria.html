@@ -108,10 +108,10 @@
         }
         .card:hover { border-color: #3a332a; transform: translateY(-3px); }
         .card-media { aspect-ratio: 4 / 5; background: radial-gradient(circle at 50% 40%, #1d1913, #0c0b09 75%); display: grid; place-items: center; position: relative; }
-        .card-media img { width: 100%; height: 100%; object-fit: cover; }
+        .card-media img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
         .card-media svg { width: 46%; height: auto; }
         .badge {
-            position: absolute; top: 14px; left: 14px;
+            position: absolute; top: 14px; left: 14px; z-index: 1;
             font-size: 10px; letter-spacing: 2px; font-weight: 600; text-transform: uppercase;
             color: var(--gold); border: 1px solid var(--gold); padding: 4px 10px; border-radius: 20px;
             background: rgba(8,7,6,.6);
@@ -325,7 +325,7 @@
                 <article class="card">
                     <div class="card-media">
                         ${p.destaque ? `<span class="badge">${p.destaque}</span>` : ''}
-                        ${p.foto ? `<img src="${p.foto}" alt="${p.nome}" loading="lazy">` : frasco(p)}
+                        ${frasco(p)}${p.foto ? `<img src="${p.foto}" alt="${p.nome}" loading="lazy" onerror="this.remove()">` : ''}
                     </div>
                     <div class="card-body">
                         <span class="card-cat">${p.categoria}${p.ml ? ` · ${p.ml} ml` : ''}</span>
